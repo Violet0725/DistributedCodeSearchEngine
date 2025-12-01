@@ -50,11 +50,14 @@ class BM25Index:
         """
         import re
         
+        # Split CamelCase BEFORE converting to lowercase
+        # Handle: parseJSON -> parse JSON
+        text = re.sub(r'([a-z])([A-Z])', r'\1 \2', text)
+        # Handle: JSONData -> JSON Data (uppercase followed by lowercase)
+        text = re.sub(r'([A-Z]+)([A-Z][a-z])', r'\1 \2', text)
+        
         # Convert to lowercase
         text = text.lower()
-        
-        # Split CamelCase
-        text = re.sub(r'([a-z])([A-Z])', r'\1 \2', text)
         
         # Split snake_case and other separators
         text = re.sub(r'[_\-./\\]', ' ', text)
@@ -141,9 +144,12 @@ class BM25Index:
         scores = self._bm25.get_scores(query_tokens)
         
         # Create (index, score) pairs and filter
+        # Note: BM25 can return negative scores when IDF is negative (few documents)
+        # We use a threshold instead of strictly positive to handle edge cases
+        min_score = max(scores) * 0.01 if len(scores) > 0 and max(scores) > 0 else float('-inf')
         results = []
         for idx, score in enumerate(scores):
-            if score <= 0:
+            if score < min_score:
                 continue
             
             entity = self._entities[idx]

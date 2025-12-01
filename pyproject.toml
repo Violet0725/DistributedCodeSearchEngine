@@ -29,9 +29,9 @@ classifiers = [
 codesearch = "codesearch.cli.main:main"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/codesearch"
-Documentation = "https://github.com/yourusername/codesearch#readme"
-Repository = "https://github.com/yourusername/codesearch"
+Homepage = "https://github.com/Violet0725/DistributedCodeSearchEngine"
+Documentation = "https://github.com/Violet0725/DistributedCodeSearchEngine#readme"
+Repository = "https://github.com/Violet0725/DistributedCodeSearchEngine"
 
 [tool.setuptools.packages.find]
 where = ["."]

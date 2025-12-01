@@ -1,8 +1,12 @@
 # 🔍 CodeSearch
 
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+
 **Distributed Code Search Engine with Semantic Understanding**
 
 Find code by *what it does*, not just syntax matching. CodeSearch uses AI-powered embeddings to understand the semantic meaning of code, enabling natural language queries like "function to parse JSON" or "async HTTP client implementation".
+
+> **New:** Local Search Mode works without Docker - perfect for quick code exploration!
 
 ## ✨ Features
 
@@ -37,9 +41,7 @@ Find code by *what it does*, not just syntax matching. CodeSearch uses AI-powere
 └─────────────────┘
 ```
 
-## 🖥️ GUI Options
-
-### Web GUI (Built-in)
+## 🖥️ Web GUI
 
 Launch the API server and access the modern web interface:
 
@@ -53,7 +55,7 @@ codesearch serve
 - ⚡ Real-time search with filters
 - 📊 Index statistics dashboard
 - 🔍 Expandable source code previews
-- 🗂️ **Local Search Mode** - Search local directories without Docker/Qdrant (checkbox in GUI)
+- 🗂️ **Local Search Mode** - Search local directories without Docker/Qdrant
 - 🧠 Smart hybrid search - Auto-detects quality and optimizes results
 
 **Local Search Mode:**
@@ -61,22 +63,6 @@ codesearch serve
 - ✅ Search any local directory instantly
 - ✅ Uses BM25 keyword search (fast and accurate)
 - ✅ Perfect for quick code exploration
-
-### Gradio GUI
-
-Alternative interface using Gradio (great for quick demos):
-
-```bash
-pip install gradio
-codesearch gui
-# Open http://localhost:7860
-```
-
-Features:
-- 🎯 Simple, clean interface
-- 📁 Local directory search without indexing
-- 🌐 Optional public sharing link
-- 📱 Mobile-friendly
 
 ## 🚀 Quick Start
 
@@ -117,8 +103,8 @@ codesearch search "send HTTP request"
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/codesearch.git
-cd codesearch
+git clone https://github.com/Violet0725/DistributedCodeSearchEngine.git
+cd DistributedCodeSearchEngine
 
 # Create virtual environment
 python -m venv venv
@@ -127,12 +113,11 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 # Install dependencies
 pip install -r requirements.txt
 
-# Install tree-sitter parsers (optional but recommended for better parsing)
-pip install tree-sitter tree-sitter-python tree-sitter-javascript tree-sitter-go tree-sitter-rust
-
 # Install the package
 pip install -e .
 ```
+
+> **Note:** Tree-sitter parsers are included in requirements.txt for accurate AST parsing.
 
 ### Start Infrastructure
 
@@ -248,19 +233,6 @@ Options:
   --port INTEGER  Port (default: 8000)
 ```
 
-### `codesearch gui`
-
-Launch the Gradio GUI (alternative interface).
-
-```bash
-codesearch gui [OPTIONS]
-
-Options:
-  --host TEXT      Host to bind (default: 127.0.0.1)
-  --port INTEGER   Port (default: 7860)
-  --share          Create public Gradio link
-```
-
 ## 🌐 REST API
 
 ### Search
@@ -322,7 +294,6 @@ docker-compose up -d --scale worker=4
 | Qdrant | 6333 (or 8001) | Vector database (use 8001 if 6333 blocked) |
 | RabbitMQ | 5672, 15672 | Message queue (15672 = management UI) |
 | Worker | - | Indexing workers |
-| Gradio GUI | 7860 | Alternative GUI interface |
 
 ## ⚙️ Configuration
 
@@ -338,7 +309,7 @@ cp env.example .env
 | `QDRANT_HOST` | localhost | Qdrant host |
 | `QDRANT_PORT` | 6333 | Qdrant port (use 8001 if 6333 is blocked on Windows) |
 | `RABBITMQ_HOST` | localhost | RabbitMQ host |
-| `EMBEDDING_MODEL` | microsoft/codebert-base | Model for embeddings (default uses CodeBERT) |
+| `EMBEDDING_MODEL` | sentence-transformers/all-MiniLM-L6-v2 | Model for embeddings |
 | `BATCH_SIZE` | 32 | Embedding batch size |
 | `GITHUB_TOKEN` | - | GitHub API token (optional) |
 
@@ -381,7 +352,7 @@ Recommended models:
 
 2. **Search Pipeline**:
    - Enhance natural language query with context
-   - Convert query to embedding using CodeBERT
+   - Convert query to embedding
    - Perform vector similarity search (semantic)
    - Perform BM25 keyword search (lexical)
    - Auto-detect semantic search quality

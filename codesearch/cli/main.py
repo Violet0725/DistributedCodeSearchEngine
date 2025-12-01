@@ -423,35 +423,6 @@ def serve(
 
 
 @app.command()
-def gui(
-    host: str = typer.Option("127.0.0.1", "--host", help="Host to bind to"),
-    port: int = typer.Option(7860, "--port", help="Port to bind to"),
-    share: bool = typer.Option(False, "--share", help="Create public Gradio link"),
-):
-    """
-    Launch the Gradio GUI (alternative to web server).
-    
-    This provides a beautiful interactive interface using Gradio.
-    Requires: pip install gradio
-    """
-    console.print(f"[bold green]Launching CodeSearch GUI on http://{host}:{port}[/bold green]")
-    
-    if share:
-        console.print("[yellow]Creating public share link...[/yellow]")
-    
-    try:
-        from ..gui import launch_gui
-        launch_gui(server_name=host, server_port=port, share=share)
-    except ImportError as e:
-        if "gradio" in str(e).lower():
-            console.print("[red]Gradio not installed. Install with:[/red]")
-            console.print("  pip install gradio")
-        else:
-            console.print(f"[red]Error: {e}[/red]")
-        raise typer.Exit(1)
-
-
-@app.command()
 def version():
     """Show version information."""
     from .. import __version__

@@ -6,6 +6,22 @@ from pathlib import Path
 from typing import Optional
 from pydantic import Field
 from pydantic_settings import BaseSettings
+import socket
+
+
+def _detect_qdrant_port() -> int:
+    """Auto-detect Qdrant port (tries 6333, then 8001)."""
+    for port in [6333, 8001]:
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(0.5)
+            result = sock.connect_ex(('localhost', port))
+            sock.close()
+            if result == 0:
+                return port
+        except Exception:
+            pass
+    return 6333  # Default fallback
 
 
 class Settings(BaseSettings):
@@ -13,7 +29,7 @@ class Settings(BaseSettings):
     
     # Qdrant Vector Database
     qdrant_host: str = Field(default="localhost", alias="QDRANT_HOST")
-    qdrant_port: int = Field(default=6333, alias="QDRANT_PORT")
+    qdrant_port: int = Field(default_factory=_detect_qdrant_port, alias="QDRANT_PORT")
     qdrant_collection: str = Field(default="code_embeddings", alias="QDRANT_COLLECTION")
     
     # RabbitMQ Message Queue
@@ -24,11 +40,13 @@ class Settings(BaseSettings):
     rabbitmq_queue: str = Field(default="indexing_jobs", alias="RABBITMQ_QUEUE")
     
     # Embedding Model
+    # Note: all-MiniLM-L6-v2 works better for natural language → code search
+    # CodeBERT is good for code-to-code similarity but not NL queries
     embedding_model: str = Field(
-        default="microsoft/codebert-base",
+        default="sentence-transformers/all-MiniLM-L6-v2",
         alias="EMBEDDING_MODEL"
     )
-    embedding_dimension: int = Field(default=768, alias="EMBEDDING_DIMENSION")
+    embedding_dimension: int = Field(default=384, alias="EMBEDDING_DIMENSION")  # 384 for MiniLM, 768 for CodeBERT
     
     # Storage paths
     repos_path: Path = Field(default=Path("./data/repos"), alias="REPOS_PATH")

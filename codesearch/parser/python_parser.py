@@ -175,10 +175,11 @@ class PythonParser(CodeParser):
                 entity = self._parse_class_node(node, source_bytes, file_path, repo_name)
                 if entity:
                     entities.append(entity)
+                # Don't recurse into class body (nested classes handled separately if needed)
+                return
             
             for child in node.children:
-                if child.type != 'class_definition':  # Don't recurse into nested classes here
-                    visit(child)
+                visit(child)
         
         visit(root_node)
         return entities

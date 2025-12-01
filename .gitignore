@@ -46,6 +46,9 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
+# Egg info
+*.egg-info/
+
 # Translations
 *.mo
 *.pot

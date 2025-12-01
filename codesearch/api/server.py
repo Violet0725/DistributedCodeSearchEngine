@@ -250,22 +250,34 @@ def create_app() -> FastAPI:
     @app.get("/stats", response_model=StatsResponse)
     async def get_stats():
         """Get index statistics."""
+        from ..storage import BM25Index
+        
+        # Get BM25 stats (always available)
+        bm25_index = BM25Index()
         try:
-            from ..storage import QdrantStore, BM25Index
-            
-            vector_store = QdrantStore()
-            bm25_index = BM25Index()
             bm25_index.load()
-            
+            bm25_count = bm25_index.count()
+        except Exception:
+            bm25_count = 0
+        
+        # Try to get Qdrant stats (may not be running)
+        total_vectors = 0
+        status = "qdrant_unavailable"
+        try:
+            from ..storage import QdrantStore
+            vector_store = QdrantStore()
             stats = vector_store.get_stats()
-            
-            return StatsResponse(
-                total_vectors=stats.get("total_points", 0),
-                bm25_documents=bm25_index.count(),
-                status=stats.get("status", "unknown")
-            )
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            total_vectors = stats.get("total_points", 0)
+            status = stats.get("status", "unknown")
+        except Exception:
+            # Qdrant not running - that's OK for local mode
+            pass
+        
+        return StatsResponse(
+            total_vectors=total_vectors,
+            bm25_documents=bm25_count,
+            status=status
+        )
     
     @app.get("/health")
     async def health_check():

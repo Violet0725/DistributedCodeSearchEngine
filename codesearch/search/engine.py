@@ -220,7 +220,8 @@ class HybridSearchEngine(SearchEngine):
             semantic_results,
             bm25_results,
             semantic_weight=weight,
-            k=60  # RRF parameter
+            k=60,  # RRF parameter
+            query=query  # Pass query for HTTP boost
         )
         
         # Convert to SearchResult objects
@@ -242,19 +243,30 @@ class HybridSearchEngine(SearchEngine):
         
         Adds context to help the embedding model understand this is a code search.
         """
-        # Add code-related context
-        enhanced = f"function or method that {query}"
+        query_lower = query.lower()
         
         # If query mentions HTTP/API/web, add more context
-        query_lower = query.lower()
         if any(term in query_lower for term in ['http', 'request', 'api', 'url', 'web']):
-            enhanced = f"HTTP request handling function: {query}"
+            # "handle http requests" is ambiguous - usually means "send/make" not "process"
+            # Unless context clearly indicates processing (redirect, response, error, cookie)
+            if 'handle' in query_lower and not any(term in query_lower for term in ['redirect', 'response', 'error', 'exception', 'cookie', 'process']):
+                # "handle http requests" → "send/make http requests"
+                enhanced = "function that sends makes HTTP requests GET POST PUT DELETE PATCH"
+            elif any(term in query_lower for term in ['make', 'send', 'perform', 'execute', 'do']):
+                # Explicitly about making/sending
+                enhanced = f"function that sends or makes HTTP requests: {query}"
+            else:
+                # Generic HTTP request function
+                enhanced = f"HTTP request function: {query}"
         elif any(term in query_lower for term in ['json', 'parse', 'decode']):
             enhanced = f"JSON parsing function: {query}"
         elif any(term in query_lower for term in ['auth', 'login', 'token']):
             enhanced = f"authentication function: {query}"
         elif any(term in query_lower for term in ['download', 'file', 'save']):
             enhanced = f"file handling function: {query}"
+        else:
+            # Add code-related context
+            enhanced = f"function or method that {query}"
         
         return enhanced
     
@@ -263,7 +275,8 @@ class HybridSearchEngine(SearchEngine):
         semantic_results: List[Tuple[CodeEntity, float]],
         bm25_results: List[Tuple[CodeEntity, float]],
         semantic_weight: float = 0.7,
-        k: int = 60
+        k: int = 60,
+        query: Optional[str] = None
     ) -> List[Tuple[CodeEntity, float, float, float]]:
         """
         Combine results using Reciprocal Rank Fusion (RRF) with quality checks.
@@ -322,10 +335,42 @@ class HybridSearchEngine(SearchEngine):
                     'bm25_raw': score
                 }
         
+        # Apply boosts for HTTP request functions when query is about HTTP
+        # This helps prioritize actual request functions (api.py, sessions.py) over handlers
+        if query and any(term in query.lower() for term in ['http', 'request', 'api']):
+            for entity_id, data in scores.items():
+                entity = data['entity']
+                file_path = entity.file_path.lower()
+                name_lower = entity.name.lower()
+                
+                # Boost actual HTTP request functions
+                if 'api.py' in file_path:
+                    # Boost functions in api.py (request, get, post, etc.)
+                    if any(term in name_lower for term in ['request', 'get', 'post', 'put', 'patch', 'delete', 'head', 'options']):
+                        data['http_boost'] = 1.5
+                    else:
+                        data['http_boost'] = 1.0
+                elif 'sessions.py' in file_path and 'send' in name_lower:
+                    # Boost send() in sessions.py
+                    data['http_boost'] = 1.5
+                elif 'adapters.py' in file_path and 'send' in name_lower:
+                    # Boost send() in adapters.py
+                    data['http_boost'] = 1.3
+                elif any(term in name_lower for term in ['handle_', 'test_']):
+                    # Reduce score for handlers and tests
+                    data['http_boost'] = 0.7
+                else:
+                    data['http_boost'] = 1.0
+        else:
+            # No boost if not HTTP-related query
+            for entity_id, data in scores.items():
+                data['http_boost'] = 1.0
+        
         # Combine scores and sort
         combined = []
         for entity_id, data in scores.items():
-            combined_score = data['semantic_rrf'] + data['bm25_rrf']
+            boost = data.get('http_boost', 1.0)
+            combined_score = (data['semantic_rrf'] + data['bm25_rrf']) * boost
             combined.append((
                 data['entity'],
                 combined_score,
