@@ -8,6 +8,10 @@ Find code by *what it does*, not just syntax matching. CodeSearch uses AI-powere
 
 > **New:** Local Search Mode works without Docker - perfect for quick code exploration!
 
+## 🎬 Demo
+
+![CodeSearch Demo](search.gif)
+
 ## ✨ Features
 
 - **Semantic Search**: Search code using natural language queries
