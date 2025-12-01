@@ -7,26 +7,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
     <style>
         :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-tertiary: #1a1a25;
-            --bg-elevated: #22222f;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f5f9;
+            --bg-elevated: #ffffff;
             --accent-primary: #6366f1;
             --accent-secondary: #8b5cf6;
             --accent-tertiary: #a855f7;
-            --accent-glow: rgba(99, 102, 241, 0.15);
-            --text-primary: #f0f0f5;
-            --text-secondary: #a0a0b0;
-            --text-muted: #606070;
-            --border-color: #2a2a3a;
+            --accent-glow: rgba(99, 102, 241, 0.12);
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
             --success: #10b981;
             --warning: #f59e0b;
             --error: #ef4444;
             --gradient-1: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
-            --gradient-2: linear-gradient(135deg, #0a0a0f 0%, #1a1a25 100%);
+            --gradient-2: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
         }
 
         * {
@@ -51,9 +51,9 @@
             right: 0;
             bottom: 0;
             background-image: 
-                radial-gradient(circle at 20% 80%, var(--accent-glow) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(168, 85, 247, 0.05) 0%, transparent 30%);
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(168, 85, 247, 0.04) 0%, transparent 30%);
             pointer-events: none;
             z-index: 0;
         }
@@ -68,7 +68,7 @@
                 linear-gradient(var(--border-color) 1px, transparent 1px),
                 linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
             background-size: 60px 60px;
-            opacity: 0.03;
+            opacity: 0.3;
             pointer-events: none;
             z-index: 0;
         }
@@ -305,7 +305,7 @@
 
         .result-card:hover {
             border-color: var(--accent-primary);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--accent-glow);
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.15), 0 0 0 1px var(--accent-glow);
             transform: translateY(-2px);
         }
 
@@ -636,54 +636,114 @@
             }
         }
 
-        /* Local Search Toggle */
-        .local-search-section {
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border-color);
+        /* Search Mode Selector */
+        .search-mode-section {
+            margin-top: 2rem;
         }
 
-        .toggle-label {
+        .mode-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .mode-card {
+            padding: 1.25rem;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .mode-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .mode-card.active {
+            border-color: var(--accent-primary);
+            background: rgba(99, 102, 241, 0.1);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+
+        .mode-card-header {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            cursor: pointer;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
         }
 
-        .toggle-label input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--accent-primary);
-            cursor: pointer;
+        .mode-icon {
+            font-size: 1.5rem;
         }
 
-        .toggle-text {
-            transition: color 0.2s ease;
-        }
-
-        .toggle-label:hover .toggle-text {
+        .mode-title {
+            font-size: 1rem;
+            font-weight: 600;
             color: var(--text-primary);
         }
 
-        .toggle-label input:checked + .toggle-text {
+        .mode-card.active .mode-title {
             color: var(--accent-primary);
         }
 
-        .local-path-input {
+        .mode-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .mode-badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.65rem;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .mode-badge.easy {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+
+        .mode-badge.powerful {
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent-secondary);
+        }
+
+        .mode-options {
             margin-top: 1rem;
-            display: flex;
-            justify-content: center;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .mode-options.hidden {
+            display: none;
+        }
+
+        .mode-option-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            display: block;
         }
 
         .path-input {
             width: 100%;
-            max-width: 500px;
             padding: 0.75rem 1rem;
             font-size: 0.9rem;
             font-family: 'JetBrains Mono', monospace;
-            background: var(--bg-tertiary);
+            background: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             color: var(--text-primary);
@@ -696,19 +756,10 @@
             box-shadow: 0 0 0 2px var(--accent-glow);
         }
 
-        .local-path-input.hidden {
-            display: none;
-        }
-
-        .mode-badge {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            font-size: 0.7rem;
-            font-weight: 600;
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--success);
-            border-radius: 4px;
-            margin-left: 0.5rem;
+        @media (max-width: 600px) {
+            .mode-selector {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Animations */
@@ -726,6 +777,155 @@
         .result-card:nth-child(3) { animation-delay: 0.15s; }
         .result-card:nth-child(4) { animation-delay: 0.2s; }
         .result-card:nth-child(5) { animation-delay: 0.25s; }
+
+        /* Index Section */
+        .index-section {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+        }
+
+        .index-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding-bottom: 1rem;
+        }
+
+        .index-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .index-toggle-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .index-section.collapsed .index-toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .index-section.collapsed .index-content {
+            display: none;
+        }
+
+        .index-content {
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+        }
+
+        .index-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .index-tab {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-family: inherit;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .index-tab:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .index-tab.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        .index-input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .index-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+        }
+
+        .index-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px var(--accent-glow);
+        }
+
+        .index-btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            font-family: inherit;
+            background: var(--gradient-1);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .index-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .index-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .index-status {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+        }
+
+        .index-status.success {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .index-status.error {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .index-status.loading {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--accent-primary);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .index-help {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -789,24 +989,80 @@
                 </div>
             </div>
 
-            <div class="local-search-section">
-                <div class="filter-group" style="justify-content: center; margin-top: 1rem;">
-                    <label class="toggle-label">
-                        <input type="checkbox" id="localModeToggle" checked>
-                        <span class="toggle-text">🗂️ Local Search Mode (no Docker needed)</span>
-                    </label>
+            <!-- Search Mode Selection -->
+            <div class="search-mode-section">
+                <div class="mode-selector">
+                    <div class="mode-card active" id="localModeCard" onclick="selectMode('local')">
+                        <div class="mode-card-header">
+                            <span class="mode-icon">🗂️</span>
+                            <span class="mode-title">Local Search</span>
+                            <span class="mode-badge easy">Easy</span>
+                        </div>
+                        <p class="mode-desc">Search any local directory instantly. No Docker or setup required. Uses fast keyword matching (BM25).</p>
+                    </div>
+                    <div class="mode-card" id="hybridModeCard" onclick="selectMode('hybrid')">
+                        <div class="mode-card-header">
+                            <span class="mode-icon">🧠</span>
+                            <span class="mode-title">Hybrid Search</span>
+                            <span class="mode-badge powerful">AI-Powered</span>
+                        </div>
+                        <p class="mode-desc">Semantic search with AI understanding. Combines vector similarity + keywords. Requires indexed repos.</p>
+                    </div>
                 </div>
-                <div class="local-path-input" id="localPathSection">
+
+                <div class="mode-options" id="localModeOptions">
+                    <label class="mode-option-label">📁 Directory to search:</label>
                     <input 
                         type="text" 
                         class="path-input" 
                         id="localPathInput"
                         value="./codesearch"
-                        placeholder="Enter local directory path..."
+                        placeholder="Enter local directory path (e.g., ./my-project)"
                     >
+                </div>
+
+                <div class="mode-options hidden" id="hybridModeOptions">
+                    <label class="mode-option-label">💡 Search indexed repositories with semantic understanding</label>
                 </div>
             </div>
         </section>
+
+        <!-- Index Section -->
+        <div class="index-section collapsed" id="indexSection">
+            <div class="index-header" onclick="toggleIndexSection()">
+                <h3>📥 Index Repository</h3>
+                <span class="index-toggle-icon">▼</span>
+            </div>
+            <div class="index-content">
+                <div class="index-tabs">
+                    <button class="index-tab active" onclick="switchIndexTab('github')">GitHub URL</button>
+                    <button class="index-tab" onclick="switchIndexTab('local')">Local Directory</button>
+                </div>
+                <div id="githubIndexTab">
+                    <div class="index-input-group">
+                        <input type="text" class="index-input" id="githubUrlInput" 
+                            placeholder="https://github.com/user/repo">
+                        <button class="index-btn" id="indexGithubBtn" onclick="indexGithubRepo()">
+                            Index
+                        </button>
+                    </div>
+                    <p class="index-help">Enter a GitHub repository URL to index its code</p>
+                </div>
+                <div id="localIndexTab" style="display: none;">
+                    <div class="index-input-group">
+                        <input type="text" class="index-input" id="localIndexPath" 
+                            placeholder="./my-project" value="./codesearch">
+                        <input type="text" class="index-input" id="localIndexName" 
+                            placeholder="repo-name" style="max-width: 150px;">
+                        <button class="index-btn" id="indexLocalBtn" onclick="indexLocalDir()">
+                            Index
+                        </button>
+                    </div>
+                    <p class="index-help">Enter a local directory path and optional name</p>
+                </div>
+                <div id="indexStatus"></div>
+            </div>
+        </div>
 
         <div class="stats-bar" id="statsBar">
             <div class="stat-item">
@@ -878,8 +1134,6 @@
         const loading = document.getElementById('loading');
         const resultsContainer = document.getElementById('resultsContainer');
         const tipsSection = document.getElementById('tipsSection');
-        const localModeToggle = document.getElementById('localModeToggle');
-        const localPathSection = document.getElementById('localPathSection');
         const localPathInput = document.getElementById('localPathInput');
 
         // Stats elements
@@ -887,14 +1141,20 @@
         const statDocs = document.getElementById('statDocs');
         const statStatus = document.getElementById('statStatus');
         
-        // Toggle local path visibility
-        localModeToggle.addEventListener('change', () => {
-            if (localModeToggle.checked) {
-                localPathSection.classList.remove('hidden');
-            } else {
-                localPathSection.classList.add('hidden');
-            }
-        });
+        // Current search mode
+        let currentMode = 'local';
+
+        function selectMode(mode) {
+            currentMode = mode;
+            
+            // Update card styles
+            document.getElementById('localModeCard').classList.toggle('active', mode === 'local');
+            document.getElementById('hybridModeCard').classList.toggle('active', mode === 'hybrid');
+            
+            // Show/hide options
+            document.getElementById('localModeOptions').classList.toggle('hidden', mode !== 'local');
+            document.getElementById('hybridModeOptions').classList.toggle('hidden', mode !== 'hybrid');
+        }
 
         // Fetch stats on load
         async function fetchStats() {
@@ -930,7 +1190,7 @@
             tipsSection.style.display = 'none';
             searchBtn.disabled = true;
 
-            const isLocalMode = localModeToggle.checked;
+                const isLocalMode = currentMode === 'local';
 
             try {
                 let response;
@@ -1151,6 +1411,103 @@
 
         // Initial load
         fetchStats();
+
+        // Index Section Functions
+        function toggleIndexSection() {
+            const section = document.getElementById('indexSection');
+            section.classList.toggle('collapsed');
+        }
+
+        function switchIndexTab(tab) {
+            const tabs = document.querySelectorAll('.index-tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('githubIndexTab').style.display = tab === 'github' ? 'block' : 'none';
+            document.getElementById('localIndexTab').style.display = tab === 'local' ? 'block' : 'none';
+        }
+
+        function showIndexStatus(message, type) {
+            const status = document.getElementById('indexStatus');
+            status.className = 'index-status ' + type;
+            status.innerHTML = message;
+        }
+
+        async function indexGithubRepo() {
+            const url = document.getElementById('githubUrlInput').value.trim();
+            if (!url) {
+                showIndexStatus('Please enter a GitHub URL', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('indexGithubBtn');
+            btn.disabled = true;
+            showIndexStatus('⏳ Indexing repository... This may take a few minutes.', 'loading');
+
+            try {
+                const response = await fetch('/index/sync', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ repo_url: url })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showIndexStatus(
+                        `✅ Indexed successfully!<br>` +
+                        `📁 ${data.files_processed} files · 📦 ${data.entities_indexed} entities · ⏱️ ${data.duration_seconds.toFixed(1)}s`,
+                        'success'
+                    );
+                    fetchStats(); // Refresh stats
+                } else {
+                    showIndexStatus('❌ ' + (data.error || 'Indexing failed'), 'error');
+                }
+            } catch (err) {
+                showIndexStatus('❌ ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function indexLocalDir() {
+            const path = document.getElementById('localIndexPath').value.trim();
+            const name = document.getElementById('localIndexName').value.trim() || path.split('/').pop();
+            
+            if (!path) {
+                showIndexStatus('Please enter a directory path', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('indexLocalBtn');
+            btn.disabled = true;
+            showIndexStatus('⏳ Indexing directory...', 'loading');
+
+            try {
+                const response = await fetch('/index/sync', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ repo_url: path, name: name })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showIndexStatus(
+                        `✅ Indexed successfully!<br>` +
+                        `📁 ${data.files_processed} files · 📦 ${data.entities_indexed} entities · ⏱️ ${data.duration_seconds.toFixed(1)}s`,
+                        'success'
+                    );
+                    fetchStats(); // Refresh stats
+                } else {
+                    showIndexStatus('❌ ' + (data.error || 'Indexing failed'), 'error');
+                }
+            } catch (err) {
+                showIndexStatus('❌ ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
     </script>
 </body>
 </html>

@@ -51,18 +51,17 @@ codesearch serve
 ```
 
 **Features:**
-- 🎨 Beautiful dark theme with syntax highlighting
-- ⚡ Real-time search with filters
+- 🎨 Modern light theme with syntax highlighting
+- ⚡ Real-time search with language/type filters
 - 📊 Index statistics dashboard
 - 🔍 Expandable source code previews
-- 🗂️ **Local Search Mode** - Search local directories without Docker/Qdrant
-- 🧠 Smart hybrid search - Auto-detects quality and optimizes results
+- � **Index repos directly from GUI** - Enter GitHub URL or local path
+- �🗂️ **Local Search Mode** - Search local directories without Docker/Qdrant
+- 🧠 **Hybrid Search Mode** - AI-powered semantic + keyword search
 
-**Local Search Mode:**
-- ✅ Works without Docker/Qdrant
-- ✅ Search any local directory instantly
-- ✅ Uses BM25 keyword search (fast and accurate)
-- ✅ Perfect for quick code exploration
+**Search Modes:**
+- 🗂️ **Local Search** - Fast BM25 keyword search, no setup needed
+- 🧠 **Hybrid Search** - Semantic AI understanding + keywords (requires indexed repos)
 
 ## 🚀 Quick Start
 

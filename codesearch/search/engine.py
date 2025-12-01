@@ -379,6 +379,16 @@ class HybridSearchEngine(SearchEngine):
             ))
         
         combined.sort(key=lambda x: x[1], reverse=True)
+        
+        # Normalize scores to 0-1 range for better UX
+        if combined:
+            max_score = combined[0][1]  # Highest score
+            if max_score > 0:
+                combined = [
+                    (entity, score / max_score, sem_score, bm25_score)
+                    for entity, score, sem_score, bm25_score in combined
+                ]
+        
         return combined
     
     def search_by_query(self, query: SearchQuery) -> List[SearchResult]:
@@ -471,6 +481,13 @@ class LocalSearchEngine:
         """
         results = self.bm25_index.search(query, limit=limit)
         
+        # Normalize scores to 0-1 range
+        if results:
+            max_score = results[0][1] if results[0][1] > 0 else 1.0
+            normalized = [(entity, score / max_score) for entity, score in results]
+        else:
+            normalized = results
+        
         return [
             SearchResult(
                 entity=entity,
@@ -479,6 +496,6 @@ class LocalSearchEngine:
                 bm25_score=score,
                 highlights=[]
             )
-            for entity, score in results
+            for entity, score in normalized
         ]
 
