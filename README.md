@@ -55,8 +55,8 @@ codesearch serve
 - ⚡ Real-time search with language/type filters
 - 📊 Index statistics dashboard
 - 🔍 Expandable source code previews
-- � **Index repos directly from GUI** - Enter GitHub URL or local path
-- �🗂️ **Local Search Mode** - Search local directories without Docker/Qdrant
+- 🔽**Index repos directly from GUI** - Enter GitHub URL or local path
+- 🗂️ **Local Search Mode** - Search local directories without Docker/Qdrant
 - 🧠 **Hybrid Search Mode** - AI-powered semantic + keyword search
 
 **Search Modes:**
