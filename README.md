@@ -439,10 +439,6 @@ The hybrid search automatically detects this and prioritizes BM25 keyword search
 2. **Index a repo**: `codesearch index https://github.com/user/repo`
 3. **Use local search**: `codesearch search "query" --local ./path`
 
-## 📝 License
-
-MIT License - see [LICENSE](LICENSE) for details.
-
 ## 🙏 Acknowledgments
 
 - [Qdrant](https://qdrant.tech/) - Vector database
